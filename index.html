@@ -9,23 +9,20 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;600;800&display=swap');
-        body { font-family: 'Plus Jakarta Sans', sans-serif; background: #ffffff; scroll-behavior: smooth; }
+        body { font-family: 'Plus Jakarta Sans', sans-serif; scroll-behavior: smooth; background: #ffffff; }
         
-        /* Page Logic */
-        .page { display: none; min-height: 90vh; }
-        .page.active { display: block; animation: pageSlide 0.4s ease-out; }
+        /* Multi-Page Logic */
+        .page-section { display: none; min-height: 100vh; padding-top: 100px; }
+        .page-section.active { display: block; animation: fadeIn 0.5s ease-in-out; }
         
-        @keyframes pageSlide { 
-            from { opacity: 0; transform: translateY(20px); } 
-            to { opacity: 1; transform: translateY(0); } 
-        }
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
         
         .brand-orange { color: #f26d35; }
         .bg-brand-orange { background-color: #f26d35; }
-        .nav-active { color: #f26d35 !important; font-weight: 800; border-bottom: 2px solid #f26d35; }
+        .nav-active { color: #f26d35 !important; border-bottom: 2px solid #f26d35; }
         
-        .skill-bar { height: 8px; border-radius: 10px; background: #f1f5f9; overflow: hidden; }
-        .skill-progress { height: 100%; background: #f26d35; transition: width 2s ease-in-out; }
+        .skill-bar { height: 8px; border-radius: 10px; background: #f1f5f9; position: relative; overflow: hidden; }
+        .skill-progress { height: 100%; background: #f26d35; border-radius: 10px; transition: width 1.5s ease; }
     </style>
 </head>
 <body class="text-slate-900">
@@ -33,200 +30,271 @@
     <nav class="fixed top-0 w-full z-50 bg-white/95 backdrop-blur-md border-b border-slate-100 h-20">
         <div class="container mx-auto px-6 h-full flex justify-between items-center">
             <div class="flex items-center space-x-3 cursor-pointer" onclick="showPage('home')">
-                <img src="logo.png" alt="GN" class="h-12 w-auto object-contain" onerror="this.style.display='none'; this.nextElementSibling.style.display='block'">
-                <div class="hidden bg-brand-orange text-white w-10 h-10 flex items-center justify-center rounded font-bold">GN</div>
+                <img src="logo.png" alt="GN Logo" class="h-12 w-auto object-contain" onerror="this.src='https://via.placeholder.com/100x50?text=GN+DESIGN'">
                 <span class="font-extrabold text-xl tracking-tighter uppercase">Sumanth <span class="brand-orange">G.</span></span>
             </div>
 
-            <div class="hidden lg:flex space-x-8 font-bold text-[11px] uppercase tracking-widest text-slate-500">
-                <button onclick="showPage('home')" class="nav-btn transition" data-page="home">Home</button>
-                <button onclick="showPage('about')" class="nav-btn transition" data-page="about">About</button>
-                <button onclick="showPage('projects')" class="nav-btn transition" data-page="projects">Portfolio</button>
-                <button onclick="showPage('services')" class="nav-btn transition" data-page="services">Services</button>
-                <button onclick="showPage('contact')" class="nav-btn transition" data-page="contact">Contact</button>
-                <button onclick="accessAdmin()" class="text-slate-300 hover:brand-orange"><i class="fa-solid fa-lock"></i></button>
+            <div class="hidden lg:flex space-x-8 font-bold text-[11px] uppercase tracking-widest text-slate-400">
+                <button onclick="showPage('home')" class="nav-link transition hover:text-slate-900" data-target="home">Home</button>
+                <button onclick="showPage('about')" class="nav-link transition hover:text-slate-900" data-target="about">About</button>
+                <button onclick="showPage('services')" class="nav-link transition hover:text-slate-900" data-target="services">Services</button>
+                <button onclick="showPage('portfolio')" class="nav-link transition hover:text-slate-900" data-target="portfolio">Portfolio</button>
+                <button onclick="showPage('contact')" class="nav-link transition hover:text-slate-900" data-target="contact">Contact</button>
+                <button onclick="adminLogin()" class="text-slate-200 hover:brand-orange"><i class="fa-solid fa-lock"></i></button>
             </div>
             <button class="lg:hidden text-2xl" onclick="toggleMenu(true)"><i class="fa-solid fa-bars-staggered"></i></button>
         </div>
     </nav>
 
-    <div id="mobile-menu" class="fixed inset-0 bg-slate-900 z-[60] hidden flex-col justify-center items-center text-white space-y-8 text-2xl font-bold">
-        <button class="absolute top-6 right-6 text-4xl" onclick="toggleMenu(false)">&times;</button>
+    <div id="mobile-menu" class="fixed inset-0 bg-slate-900 z-[60] hidden flex-col justify-center items-center text-white space-y-8 text-3xl font-bold">
+        <button class="absolute top-6 right-6" onclick="toggleMenu(false)">&times;</button>
         <span onclick="showPage('home'); toggleMenu(false)">HOME</span>
         <span onclick="showPage('about'); toggleMenu(false)">ABOUT</span>
-        <span onclick="showPage('projects'); toggleMenu(false)">PORTFOLIO</span>
         <span onclick="showPage('services'); toggleMenu(false)">SERVICES</span>
+        <span onclick="showPage('portfolio'); toggleMenu(false)">PORTFOLIO</span>
         <span onclick="showPage('contact'); toggleMenu(false)">CONTACT</span>
     </div>
 
-    <main class="mt-20">
-        <section id="home" class="page active container mx-auto px-6 flex flex-col items-center justify-center text-center py-20">
-            <h1 class="text-5xl md:text-8xl font-black leading-tight mb-8 uppercase">Design <br> <span class="brand-orange">Industrial</span> <br> Solutions.</h1>
-            <p class="text-slate-500 text-lg max-w-2xl mb-12">Professional Graphic Designer with an MCA background, specializing in Agri-Branding and Real Estate Design.</p>
-            <div class="flex gap-4">
-                <button onclick="showPage('projects')" class="bg-brand-orange text-white px-10 py-4 rounded-full font-bold shadow-lg">View Portfolio</button>
+    <main>
+        
+        <section id="home" class="page-section active container mx-auto px-6 flex flex-col items-center justify-center text-center">
+            <span class="brand-orange font-bold tracking-[0.3em] uppercase text-sm mb-4">Graphic Designer & MCA Professional</span>
+            <h1 class="text-6xl md:text-9xl font-black mb-8 leading-none uppercase">Industrial <br><span class="brand-orange italic">Branding.</span></h1>
+            <p class="text-slate-500 text-xl max-w-2xl mb-12">Specializing in Agricultural Packaging, Fertilizer Label Design, and 3D Residential Elevations.</p>
+            <div class="flex flex-col md:flex-row gap-4">
+                <button onclick="showPage('portfolio')" class="bg-brand-orange text-white px-12 py-5 rounded-xl font-bold shadow-2xl hover:scale-105 transition">Explore Portfolio</button>
+                <button onclick="showPage('contact')" class="bg-slate-900 text-white px-12 py-5 rounded-xl font-bold shadow-2xl hover:scale-105 transition">Start a Project</button>
             </div>
         </section>
 
-        <section id="about" class="page container mx-auto px-6 py-16">
-            <div class="grid md:grid-cols-2 gap-16 items-center">
+        <section id="about" class="page-section container mx-auto px-6 py-10">
+            <div class="grid lg:grid-cols-2 gap-20 items-center">
                 <div>
-                    <h2 class="text-4xl font-black mb-6 uppercase">About <span class="brand-orange">Sumanth</span></h2>
-                    <p class="text-slate-600 mb-6 italic font-semibold">Master of Computer Application (2021-2024)</p>
-                    <p class="text-slate-500 mb-8">Professional Graphic Designer based in Bangalore-North. Expert in bilingual marketing (Kannada & English) and high-visibility industrial packaging.</p>
-                    <div class="space-y-4">
-                        <div class="flex items-center gap-4 bg-slate-50 p-4 rounded-xl border-l-4 border-brand-orange">
-                            <span class="font-bold">SMPS Innovations</span>
-                            <span class="text-xs text-slate-400">2025 - 2026</span>
+                    <h2 class="text-5xl font-black mb-8">CAREER <span class="brand-orange">&</span> EDUCATION</h2>
+                    <div class="space-y-8">
+                        <div class="relative pl-8 border-l-2 border-slate-100">
+                            <div class="absolute -left-[9px] top-0 w-4 h-4 rounded-full bg-brand-orange"></div>
+                            <h4 class="font-bold text-xl uppercase italic">SMPS Innovations Pvt Ltd</h4>
+                            <p class="text-slate-400 text-sm mb-2">Graphic Designer | 2025 - 2026</p>
+                            <p class="text-slate-600 text-sm">Lead designer for large-scale marketing hoardings and agricultural brand identity.</p>
                         </div>
-                        <div class="flex items-center gap-4 bg-slate-50 p-4 rounded-xl border-l-4 border-slate-300">
-                            <span class="font-bold">Jenushree Agritech</span>
-                            <span class="text-xs text-slate-400">Freelance Designer</span>
+                        <div class="relative pl-8 border-l-2 border-slate-100">
+                            <div class="absolute -left-[9px] top-0 w-4 h-4 rounded-full bg-slate-300"></div>
+                            <h4 class="font-bold text-xl uppercase italic">Jenushree Agritech</h4>
+                            <p class="text-slate-400 text-sm mb-2">Freelance Designer | 2025</p>
+                            <p class="text-slate-600 text-sm">Created specialized packaging labels and bucket designs for agricultural fertilizers.</p>
+                        </div>
+                        <div class="bg-slate-50 p-8 rounded-[2rem] mt-10">
+                            <h4 class="brand-orange font-bold text-xs uppercase tracking-widest mb-2">Academic Qualification</h4>
+                            <p class="text-xl font-black">Master of Computer Application (MCA)</p>
+                            <p class="text-slate-500 font-bold">2021 - 2024</p>
                         </div>
                     </div>
                 </div>
-                <div class="bg-slate-900 p-10 rounded-[3rem] text-white">
-                    <h3 class="text-xl font-bold mb-8">Technical Skills</h3>
+                <div class="bg-slate-900 text-white p-12 rounded-[3rem]">
+                    <h3 class="text-2xl font-bold mb-10 italic">Technical Software Mastery</h3>
+                    <div class="space-y-8">
+                        <div>
+                            <div class="flex justify-between mb-2 font-bold text-xs"><span>CorelDRAW</span><span>100%</span></div>
+                            <div class="skill-bar"><div class="skill-progress" style="width: 100%"></div></div>
+                        </div>
+                        <div>
+                            <div class="flex justify-between mb-2 font-bold text-xs"><span>Adobe Illustrator</span><span>95%</span></div>
+                            <div class="skill-bar"><div class="skill-progress" style="width: 95%"></div></div>
+                        </div>
+                        <div>
+                            <div class="flex justify-between mb-2 font-bold text-xs"><span>Adobe Photoshop</span><span>90%</span></div>
+                            <div class="skill-bar"><div class="skill-progress" style="width: 90%"></div></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section id="services" class="page-section container mx-auto px-6 py-10">
+            <h2 class="text-5xl font-black text-center mb-20 uppercase tracking-tighter">My <span class="brand-orange">Expertise</span></h2>
+            <div class="grid md:grid-cols-3 gap-8">
+                <div class="group bg-white p-12 rounded-[3rem] border border-slate-100 hover:border-brand-orange transition-all duration-500 shadow-sm hover:shadow-2xl">
+                    <i class="fa-solid fa-layer-group text-4xl brand-orange mb-8"></i>
+                    <h3 class="font-black text-2xl mb-4">Packaging Design</h3>
+                    <p class="text-slate-500 leading-relaxed">Specialized in Fertilizer labels, pouches, and bucket mockups with high-quality industrial finishes.</p>
+                </div>
+                <div class="group bg-white p-12 rounded-[3rem] border border-slate-100 hover:border-brand-orange transition-all duration-500 shadow-sm hover:shadow-2xl">
+                    <i class="fa-solid fa-vector-square text-4xl brand-orange mb-8"></i>
+                    <h3 class="font-black text-2xl mb-4">3D Elevations</h3>
+                    <p class="text-slate-500 leading-relaxed">Creating detailed residential 3D elevations and floor plans for 600sqft plots (15x40, etc.).</p>
+                </div>
+                <div class="group bg-white p-12 rounded-[3rem] border border-slate-100 hover:border-brand-orange transition-all duration-500 shadow-sm hover:shadow-2xl">
+                    <i class="fa-solid fa-language text-4xl brand-orange mb-8"></i>
+                    <h3 class="font-black text-2xl mb-4">Bilingual Marketing</h3>
+                    <p class="text-slate-500 leading-relaxed">Designing professional content in both English and Kannada for regional impact.</p>
+                </div>
+            </div>
+        </section>
+
+        <section id="portfolio" class="page-section container mx-auto px-6 py-10">
+            <div class="flex justify-between items-end mb-12">
+                <h2 class="text-5xl font-black uppercase">Project <span class="brand-orange">Showcase</span></h2>
+                <a href="https://github.com/Sumanthg04" target="_blank" class="text-xs font-bold brand-orange border-b-2 border-brand-orange pb-1">GITHUB REPO</a>
+            </div>
+            <div id="gallery-root" class="grid grid-cols-1 md:grid-cols-3 gap-8">
+                </div>
+        </section>
+
+        <section id="contact" class="page-section container mx-auto px-6 py-10">
+            <div class="max-w-6xl mx-auto bg-slate-900 text-white rounded-[4rem] overflow-hidden flex flex-col lg:flex-row">
+                <div class="lg:w-1/2 p-16">
+                    <h2 class="text-5xl font-black mb-10 italic uppercase">Let's Design <br>Your Future.</h2>
                     <div class="space-y-6">
-                        <div><div class="flex justify-between text-xs mb-2"><span>CorelDRAW</span><span>100%</span></div><div class="skill-bar"><div class="skill-progress" style="width: 100%"></div></div></div>
-                        <div><div class="flex justify-between text-xs mb-2"><span>Adobe Illustrator</span><span>95%</span></div><div class="skill-bar"><div class="skill-progress" style="width: 95%"></div></div></div>
-                        <div><div class="flex justify-between text-xs mb-2"><span>Adobe Photoshop</span><span>90%</span></div><div class="skill-bar"><div class="skill-progress" style="width: 90%"></div></div></div>
+                        <div class="flex items-center gap-6">
+                            <div class="w-12 h-12 bg-white/10 rounded-full flex items-center justify-center text-brand-orange"><i class="fa-solid fa-phone"></i></div>
+                            <div><p class="text-[10px] uppercase text-slate-500 font-bold">Call Me</p><p class="font-bold">+91 7892647479</p></div>
+                        </div>
+                        <div class="flex items-center gap-6">
+                            <div class="w-12 h-12 bg-white/10 rounded-full flex items-center justify-center text-brand-orange"><i class="fa-solid fa-envelope"></i></div>
+                            <div><p class="text-[10px] uppercase text-slate-500 font-bold">Email Me</p><p class="font-bold">sumanthg2904@gmail.com</p></div>
+                        </div>
+                        <div class="flex items-center gap-6">
+                            <div class="w-12 h-12 bg-white/10 rounded-full flex items-center justify-center text-brand-orange"><i class="fa-solid fa-location-dot"></i></div>
+                            <div><p class="text-[10px] uppercase text-slate-500 font-bold">Location</p><p class="font-bold">Kithanahalli, Bangalore</p></div>
+                        </div>
                     </div>
                 </div>
-            </div>
-        </section>
-
-        <section id="projects" class="page container mx-auto px-6 py-16">
-            <h2 class="text-4xl font-black mb-12 uppercase">Design <span class="brand-orange">Portfolio</span></h2>
-            <div id="gallery-root" class="grid grid-cols-1 md:grid-cols-3 gap-8"></div>
-        </section>
-
-        <section id="services" class="page container mx-auto px-6 py-16">
-            <h2 class="text-4xl font-black text-center mb-16 uppercase">What I <span class="brand-orange">Do</span></h2>
-            <div class="grid md:grid-cols-3 gap-8 text-center">
-                <div class="p-10 border rounded-[2rem] hover:shadow-xl transition">
-                    <i class="fa-solid fa-seedling text-4xl brand-orange mb-6"></i>
-                    <h3 class="font-bold text-xl mb-4">Agri-Branding</h3>
-                    <p class="text-slate-500 text-sm">Industrial fertilizer labels, pouches, and bucket packaging design.</p>
-                </div>
-                <div class="p-10 border rounded-[2rem] hover:shadow-xl transition">
-                    <i class="fa-solid fa-house-chimney text-4xl brand-orange mb-6"></i>
-                    <h3 class="font-bold text-xl mb-4">Real Estate</h3>
-                    <p class="text-slate-500 text-sm">3D house elevations, hoardings, and marketing banners.</p>
-                </div>
-                <div class="p-10 border rounded-[2rem] hover:shadow-xl transition">
-                    <i class="fa-solid fa-language text-4xl brand-orange mb-6"></i>
-                    <h3 class="font-bold text-xl mb-4">Bilingual Design</h3>
-                    <p class="text-slate-500 text-sm">Professional marketing materials in both Kannada and English.</p>
+                <div class="lg:w-1/2 bg-white p-16 text-slate-900">
+                    <form id="lead-form" class="space-y-6">
+                        <input type="text" id="client_name" placeholder="Full Name" required class="w-full bg-slate-50 p-5 rounded-2xl border-none outline-none focus:ring-2 focus:ring-[#f26d35]">
+                        <input type="email" id="client_email" placeholder="Email Address" required class="w-full bg-slate-50 p-5 rounded-2xl border-none outline-none focus:ring-2 focus:ring-[#f26d35]">
+                        <textarea id="client_msg" placeholder="Tell me about your project requirement..." required class="w-full bg-slate-50 p-5 rounded-2xl border-none outline-none focus:ring-2 focus:ring-[#f26d35] h-32"></textarea>
+                        <button type="submit" class="w-full bg-brand-orange text-white py-5 rounded-2xl font-black uppercase tracking-widest shadow-xl">Submit Requirement</button>
+                    </form>
                 </div>
             </div>
         </section>
 
-        <section id="contact" class="page container mx-auto px-6 py-16 text-center">
-            <div class="max-w-2xl mx-auto">
-                <h2 class="text-4xl font-black mb-12 uppercase">Contact <span class="brand-orange">Me</span></h2>
-                <form id="contact-form" class="space-y-4 text-left">
-                    <input type="text" id="usr_name" placeholder="Your Name" required class="w-full p-4 rounded-xl border outline-none">
-                    <input type="email" id="usr_email" placeholder="Email Address" required class="w-full p-4 rounded-xl border outline-none">
-                    <textarea id="usr_msg" placeholder="Tell me about your project requirement..." required class="w-full p-4 rounded-xl border outline-none h-32"></textarea>
-                    <button type="submit" class="w-full bg-brand-orange text-white py-4 rounded-xl font-bold">Submit Inquiry</button>
-                </form>
-            </div>
-        </section>
-
-        <section id="admin" class="page container mx-auto px-6 py-16">
-            <div class="bg-white p-8 border rounded-[2rem] shadow-sm">
-                <h2 class="text-2xl font-black mb-8 uppercase">Inquiry <span class="brand-orange">Manager</span></h2>
+        <section id="admin" class="page-section container mx-auto px-6 py-10">
+            <div class="bg-white p-10 border rounded-[3rem] shadow-sm">
+                <div class="flex justify-between items-center mb-10">
+                    <h2 class="text-3xl font-black">LEAD <span class="brand-orange">DASHBOARD</span></h2>
+                    <button onclick="showPage('home')" class="bg-red-50 text-red-600 px-6 py-2 rounded-xl font-bold">Logout</button>
+                </div>
                 <div class="overflow-x-auto">
                     <table class="w-full text-left">
-                        <thead class="bg-slate-50 text-[10px] uppercase font-bold text-slate-400">
-                            <tr><th class="p-4">Client</th><th class="p-4">Message</th><th class="p-4 text-right">Actions</th></tr>
+                        <thead>
+                            <tr class="text-[10px] uppercase tracking-widest text-slate-400 border-b">
+                                <th class="p-4">Source</th>
+                                <th class="p-4">Project Details</th>
+                                <th class="p-4 text-right">Action</th>
+                            </tr>
                         </thead>
                         <tbody id="leads-body"></tbody>
                     </table>
                 </div>
             </div>
         </section>
+
     </main>
 
     <script>
-        // PAGE TRANSITION
-        function showPage(pId) {
-            document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
-            document.getElementById(pId).classList.add('active');
-            document.querySelectorAll('.nav-btn').forEach(btn => {
-                btn.classList.remove('nav-active');
-                if(btn.getAttribute('data-page') === pId) btn.classList.add('nav-active');
+        // 1. PAGE NAVIGATION
+        function showPage(pageId) {
+            document.querySelectorAll('.page-section').forEach(p => p.classList.remove('active'));
+            document.getElementById(pageId).classList.add('active');
+            
+            document.querySelectorAll('.nav-link').forEach(link => {
+                link.classList.remove('nav-active');
+                if(link.getAttribute('data-target') === pageId) link.classList.add('nav-active');
             });
-            if(pId === 'admin') loadLeads();
+
+            if(pageId === 'admin') loadLeads();
+            if(pageId === 'portfolio') loadAssets();
             window.scrollTo(0,0);
         }
 
-        function toggleMenu(s) { document.getElementById('mobile-menu').style.display = s ? 'flex' : 'none'; }
+        function toggleMenu(open) {
+            document.getElementById('mobile-menu').style.display = open ? 'flex' : 'none';
+        }
 
-        // LEAD SYSTEM
-        document.getElementById('contact-form').addEventListener('submit', function(e) {
+        // 2. LEAD MANAGEMENT
+        document.getElementById('lead-form').addEventListener('submit', function(e) {
             e.preventDefault();
-            const lead = { id: Date.now(), n: document.getElementById('usr_name').value, e: document.getElementById('usr_email').value, m: document.getElementById('usr_msg').value };
+            const lead = {
+                id: Date.now(),
+                name: document.getElementById('client_name').value,
+                email: document.getElementById('client_email').value,
+                msg: document.getElementById('client_msg').value
+            };
             let leads = JSON.parse(localStorage.getItem('sg_leads') || '[]');
             leads.push(lead);
             localStorage.setItem('sg_leads', JSON.stringify(leads));
-            alert("Message Received! I will view it in my Admin panel.");
+            alert("Inquiry Sent Successfully! Check the Admin panel.");
             this.reset();
         });
 
         function loadLeads() {
             const body = document.getElementById('leads-body');
             const leads = JSON.parse(localStorage.getItem('sg_leads') || '[]');
-            body.innerHTML = leads.length ? '' : '<tr><td colspan="3" class="p-10 text-center text-slate-300">No entries.</td></tr>';
+            body.innerHTML = leads.length ? '' : '<tr><td colspan="3" class="p-10 text-center text-slate-300">No client requests yet.</td></tr>';
+            
             leads.forEach(l => {
-                body.innerHTML += `<tr class="border-b hover:bg-slate-50">
-                    <td class="p-4 font-bold text-sm">${l.n}<br><span class="text-[10px] text-blue-500">${l.e}</span></td>
-                    <td class="p-4 text-xs text-slate-500">${l.m}</td>
+                body.innerHTML += `
+                <tr class="border-b hover:bg-slate-50 transition">
+                    <td class="p-4"><p class="font-bold">${l.name}</p><p class="text-xs text-blue-500 underline">${l.email}</p></td>
+                    <td class="p-4 text-xs text-slate-500 italic">${l.msg}</td>
                     <td class="p-4 text-right space-x-2">
-                        <button onclick="reply('${l.e}', '${l.n}')" class="text-brand-orange text-xl"><i class="fa-solid fa-paper-plane"></i></button>
-                        <button onclick="delL(${l.id})" class="text-slate-300"><i class="fa-solid fa-trash"></i></button>
+                        <button onclick="replyLead('${l.email}', '${l.name}')" class="text-brand-orange bg-orange-50 w-10 h-10 rounded-lg"><i class="fa-solid fa-reply"></i></button>
+                        <button onclick="deleteLead(${l.id})" class="text-slate-300 hover:text-red-600"><i class="fa-solid fa-trash"></i></button>
                     </td>
                 </tr>`;
             });
         }
 
-        function reply(email, name) {
-            const m = prompt(`Feedback for ${name}:`);
-            if(m) window.location.href = `mailto:${email}?subject=Reply from Sumanth G&body=${encodeURIComponent(m)}`;
+        function replyLead(email, name) {
+            const feedback = prompt(`Enter feedback for ${name}:`);
+            if(feedback) {
+                window.location.href = `mailto:${email}?subject=Reply to Inquiry - Sumanth G&body=${encodeURIComponent(feedback)}`;
+            }
         }
 
-        function delL(id) {
-            let l = JSON.parse(localStorage.getItem('sg_leads') || '[]').filter(x => x.id !== id);
-            localStorage.setItem('sg_leads', JSON.stringify(l));
-            loadLeads();
+        function deleteLead(id) {
+            if(confirm("Delete this lead?")) {
+                let leads = JSON.parse(localStorage.getItem('sg_leads') || '[]');
+                localStorage.setItem('sg_leads', JSON.stringify(leads.filter(x => x.id !== id)));
+                loadLeads();
+            }
         }
 
-        function accessAdmin() {
-            if(btoa(prompt("Key:")) === "MjkwNA==") showPage('admin');
-            else alert("Denied");
+        // 3. ADMIN ACCESS
+        function adminLogin() {
+            const key = prompt("Enter Admin PIN:");
+            if(key === "2904") showPage('admin');
+            else alert("Unauthorized access.");
         }
 
-        // ASSETS LOAD
-        async function fetchW() {
-            const r = document.getElementById('gallery-root');
+        // 4. PORTFOLIO LOAD
+        async function loadAssets() {
+            const root = document.getElementById('gallery-root');
             try {
-                const res = await fetch('https://api.github.com/repos/Sumanthg04/portfolio-assets/contents/projects');
+                const res = await fetch(`https://api.github.com/repos/Sumanthg04/portfolio-assets/contents/projects`);
                 const data = await res.json();
                 if(Array.isArray(data)) {
-                    r.innerHTML = '';
+                    root.innerHTML = '';
                     data.forEach(f => {
                         if(f.name.match(/\.(jpg|jpeg|png|webp)$/i)) {
-                            r.innerHTML += `<div class="bg-slate-50 border rounded-2xl overflow-hidden shadow-sm">
-                                <img src="${f.download_url}" class="w-full aspect-square object-cover">
-                                <div class="p-4 font-bold text-xs uppercase text-center">${f.name.split('.')[0]}</div>
+                            root.innerHTML += `
+                            <div class="bg-white rounded-3xl overflow-hidden border border-slate-50 shadow-sm hover:shadow-2xl transition-all duration-500 group">
+                                <img src="${f.download_url}" class="w-full aspect-[4/3] object-cover group-hover:scale-105 transition">
+                                <div class="p-6">
+                                    <h4 class="font-black text-sm uppercase tracking-tighter">${f.name.split('.')[0].replace(/-/g, ' ')}</h4>
+                                    <p class="text-[10px] text-slate-400 mt-1 uppercase font-bold">Industrial Visuals</p>
+                                </div>
                             </div>`;
                         }
                     });
                 }
-            } catch(e) {}
+            } catch(e) { root.innerHTML = '<p class="col-span-full text-center text-slate-300 italic">Please upload your designs to GitHub "projects" folder.</p>'; }
         }
-        window.onload = fetchW;
+
+        window.onload = () => showPage('home');
     </script>
 </body>
 </html>
