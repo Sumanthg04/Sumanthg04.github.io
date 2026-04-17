@@ -9,20 +9,23 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;600;800&display=swap');
-        body { font-family: 'Plus Jakarta Sans', sans-serif; background: #ffffff; }
+        body { font-family: 'Plus Jakarta Sans', sans-serif; background: #ffffff; scroll-behavior: smooth; }
         
-        .page { display: none; min-height: 85vh; }
-        .page.active { display: block; animation: fadeIn 0.4s ease-in-out; }
+        /* Page Logic */
+        .page { display: none; min-height: 90vh; }
+        .page.active { display: block; animation: pageSlide 0.4s ease-out; }
         
-        @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+        @keyframes pageSlide { 
+            from { opacity: 0; transform: translateY(20px); } 
+            to { opacity: 1; transform: translateY(0); } 
+        }
         
-        /* Matching the Orange from your logo */
         .brand-orange { color: #f26d35; }
         .bg-brand-orange { background-color: #f26d35; }
-        .nav-active { color: #f26d35 !important; border-bottom: 2px solid #f26d35; }
+        .nav-active { color: #f26d35 !important; font-weight: 800; border-bottom: 2px solid #f26d35; }
         
-        .skill-bar { height: 6px; border-radius: 10px; background: #f1f5f9; position: relative; }
-        .skill-progress { height: 100%; border-radius: 10px; background: #f26d35; width: 0; transition: width 1.5s ease; }
+        .skill-bar { height: 8px; border-radius: 10px; background: #f1f5f9; overflow: hidden; }
+        .skill-progress { height: 100%; background: #f26d35; transition: width 2s ease-in-out; }
     </style>
 </head>
 <body class="text-slate-900">
@@ -30,90 +33,114 @@
     <nav class="fixed top-0 w-full z-50 bg-white/95 backdrop-blur-md border-b border-slate-100 h-20">
         <div class="container mx-auto px-6 h-full flex justify-between items-center">
             <div class="flex items-center space-x-3 cursor-pointer" onclick="showPage('home')">
-                <img src="logo.png" alt="GN Logo" class="h-10 w-auto">
+                <img src="logo.png" alt="GN" class="h-12 w-auto object-contain" onerror="this.style.display='none'; this.nextElementSibling.style.display='block'">
+                <div class="hidden bg-brand-orange text-white w-10 h-10 flex items-center justify-center rounded font-bold">GN</div>
                 <span class="font-extrabold text-xl tracking-tighter uppercase">Sumanth <span class="brand-orange">G.</span></span>
             </div>
 
-            <div class="hidden md:flex space-x-8 font-bold text-xs uppercase tracking-widest text-slate-500">
-                <button onclick="showPage('home')" class="nav-btn hover:brand-orange transition" data-page="home">Home</button>
-                <button onclick="showPage('about')" class="nav-btn hover:brand-orange transition" data-page="about">Career</button>
-                <button onclick="showPage('projects')" class="nav-btn hover:brand-orange transition" data-page="projects">Portfolio</button>
-                <button onclick="showPage('contact')" class="nav-btn hover:brand-orange transition" data-page="contact">Contact</button>
-                <button onclick="accessAdmin()" class="text-slate-300 hover:brand-orange transition"><i class="fa-solid fa-lock"></i></button>
+            <div class="hidden lg:flex space-x-8 font-bold text-[11px] uppercase tracking-widest text-slate-500">
+                <button onclick="showPage('home')" class="nav-btn transition" data-page="home">Home</button>
+                <button onclick="showPage('about')" class="nav-btn transition" data-page="about">About</button>
+                <button onclick="showPage('projects')" class="nav-btn transition" data-page="projects">Portfolio</button>
+                <button onclick="showPage('services')" class="nav-btn transition" data-page="services">Services</button>
+                <button onclick="showPage('contact')" class="nav-btn transition" data-page="contact">Contact</button>
+                <button onclick="accessAdmin()" class="text-slate-300 hover:brand-orange"><i class="fa-solid fa-lock"></i></button>
             </div>
-            
-            <button class="md:hidden text-2xl" onclick="toggleMenu(true)"><i class="fa-solid fa-bars-staggered"></i></button>
+            <button class="lg:hidden text-2xl" onclick="toggleMenu(true)"><i class="fa-solid fa-bars-staggered"></i></button>
         </div>
     </nav>
 
-    <div id="mobile-menu" class="fixed inset-0 bg-slate-900 z-[60] hidden flex-col justify-center items-center text-white space-y-8 text-3xl font-bold">
+    <div id="mobile-menu" class="fixed inset-0 bg-slate-900 z-[60] hidden flex-col justify-center items-center text-white space-y-8 text-2xl font-bold">
         <button class="absolute top-6 right-6 text-4xl" onclick="toggleMenu(false)">&times;</button>
-        <img src="logo.png" class="h-20 mb-4 brightness-200">
         <span onclick="showPage('home'); toggleMenu(false)">HOME</span>
-        <span onclick="showPage('about'); toggleMenu(false)">CAREER</span>
+        <span onclick="showPage('about'); toggleMenu(false)">ABOUT</span>
         <span onclick="showPage('projects'); toggleMenu(false)">PORTFOLIO</span>
+        <span onclick="showPage('services'); toggleMenu(false)">SERVICES</span>
         <span onclick="showPage('contact'); toggleMenu(false)">CONTACT</span>
-        <span onclick="accessAdmin(); toggleMenu(false)" class="brand-orange text-lg">ADMIN LOGIN</span>
     </div>
 
-    <main class="mt-32 pb-20">
-        <section id="home" class="page active container mx-auto px-6 text-center">
-            <div class="max-w-4xl mx-auto">
-                <h1 class="text-6xl md:text-8xl font-black mt-8 mb-8 leading-tight">PRECISION IN <br> <span class="brand-orange italic">DESIGN.</span></h1>
-                <p class="text-slate-500 text-xl max-w-2xl mx-auto mb-12">MCA Professional & Lead Designer specializing in Agricultural Branding and Industrial Packaging.</p>
-                <div class="flex flex-col md:row justify-center gap-4">
-                    <button onclick="showPage('projects')" class="bg-brand-orange text-white px-10 py-5 rounded-xl font-bold shadow-xl hover:scale-105 transition">View My Work</button>
-                    <button onclick="showPage('contact')" class="bg-slate-900 text-white px-10 py-5 rounded-xl font-bold shadow-xl hover:scale-105 transition">Contact Me</button>
-                </div>
+    <main class="mt-20">
+        <section id="home" class="page active container mx-auto px-6 flex flex-col items-center justify-center text-center py-20">
+            <h1 class="text-5xl md:text-8xl font-black leading-tight mb-8 uppercase">Design <br> <span class="brand-orange">Industrial</span> <br> Solutions.</h1>
+            <p class="text-slate-500 text-lg max-w-2xl mb-12">Professional Graphic Designer with an MCA background, specializing in Agri-Branding and Real Estate Design.</p>
+            <div class="flex gap-4">
+                <button onclick="showPage('projects')" class="bg-brand-orange text-white px-10 py-4 rounded-full font-bold shadow-lg">View Portfolio</button>
             </div>
         </section>
 
-        <section id="projects" class="page container mx-auto px-6 py-10">
-            <div class="flex items-center space-x-4 mb-10">
-                <img src="logo.png" class="h-8 opacity-50">
-                <h2 class="text-4xl font-black uppercase">Recent <span class="brand-orange">Projects</span></h2>
-            </div>
-            <div id="gallery-root" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8"></div>
-        </section>
-
-        <section id="contact" class="page container mx-auto px-6 py-10">
-            <div class="max-w-5xl mx-auto bg-slate-50 border rounded-[3rem] overflow-hidden flex flex-col md:flex-row shadow-2xl">
-                <div class="p-12 md:w-1/2 bg-slate-900 text-white">
-                    <img src="logo.png" class="h-12 mb-8 brightness-200">
-                    <h2 class="text-4xl font-black mb-6 italic">Let's Connect.</h2>
-                    <p class="text-slate-400 mb-10">Available for 3D House Elevation & Industrial Branding projects.</p>
-                    <div class="space-y-4 font-bold text-sm">
-                        <p><i class="fa-solid fa-phone brand-orange mr-3"></i> +91 7892647479</p>
-                        <p><i class="fa-solid fa-envelope brand-orange mr-3"></i> sumanthg2904@gmail.com</p>
-                        <p><i class="fa-solid fa-map-pin brand-orange mr-3"></i> Bangalore, India</p>
+        <section id="about" class="page container mx-auto px-6 py-16">
+            <div class="grid md:grid-cols-2 gap-16 items-center">
+                <div>
+                    <h2 class="text-4xl font-black mb-6 uppercase">About <span class="brand-orange">Sumanth</span></h2>
+                    <p class="text-slate-600 mb-6 italic font-semibold">Master of Computer Application (2021-2024)</p>
+                    <p class="text-slate-500 mb-8">Professional Graphic Designer based in Bangalore-North. Expert in bilingual marketing (Kannada & English) and high-visibility industrial packaging.</p>
+                    <div class="space-y-4">
+                        <div class="flex items-center gap-4 bg-slate-50 p-4 rounded-xl border-l-4 border-brand-orange">
+                            <span class="font-bold">SMPS Innovations</span>
+                            <span class="text-xs text-slate-400">2025 - 2026</span>
+                        </div>
+                        <div class="flex items-center gap-4 bg-slate-50 p-4 rounded-xl border-l-4 border-slate-300">
+                            <span class="font-bold">Jenushree Agritech</span>
+                            <span class="text-xs text-slate-400">Freelance Designer</span>
+                        </div>
                     </div>
                 </div>
-                <div class="p-12 bg-white md:w-1/2">
-                    <form id="contact-form" class="space-y-4">
-                        <input type="text" id="usr_name" placeholder="Name" required class="w-full bg-slate-50 p-4 rounded-xl outline-none focus:ring-2 focus:ring-[#f26d35]">
-                        <input type="email" id="usr_email" placeholder="Email" required class="w-full bg-slate-50 p-4 rounded-xl outline-none focus:ring-2 focus:ring-[#f26d35]">
-                        <textarea id="usr_msg" placeholder="Tell me about your project..." required class="w-full bg-slate-50 p-4 rounded-xl outline-none focus:ring-2 focus:ring-[#f26d35] h-32"></textarea>
-                        <button type="submit" class="w-full bg-brand-orange text-white py-4 rounded-xl font-bold">Submit Request</button>
-                    </form>
+                <div class="bg-slate-900 p-10 rounded-[3rem] text-white">
+                    <h3 class="text-xl font-bold mb-8">Technical Skills</h3>
+                    <div class="space-y-6">
+                        <div><div class="flex justify-between text-xs mb-2"><span>CorelDRAW</span><span>100%</span></div><div class="skill-bar"><div class="skill-progress" style="width: 100%"></div></div></div>
+                        <div><div class="flex justify-between text-xs mb-2"><span>Adobe Illustrator</span><span>95%</span></div><div class="skill-bar"><div class="skill-progress" style="width: 95%"></div></div></div>
+                        <div><div class="flex justify-between text-xs mb-2"><span>Adobe Photoshop</span><span>90%</span></div><div class="skill-bar"><div class="skill-progress" style="width: 90%"></div></div></div>
+                    </div>
                 </div>
             </div>
         </section>
 
-        <section id="admin" class="page container mx-auto px-6 py-10">
-            <div class="bg-white p-8 rounded-[2rem] shadow-xl border border-slate-100">
-                <div class="flex justify-between items-center mb-10">
-                    <h2 class="text-3xl font-black">Client <span class="brand-orange">Requests</span></h2>
-                    <button onclick="showPage('home')" class="bg-slate-900 text-white px-6 py-2 rounded-lg font-bold text-xs uppercase">Logout</button>
+        <section id="projects" class="page container mx-auto px-6 py-16">
+            <h2 class="text-4xl font-black mb-12 uppercase">Design <span class="brand-orange">Portfolio</span></h2>
+            <div id="gallery-root" class="grid grid-cols-1 md:grid-cols-3 gap-8"></div>
+        </section>
+
+        <section id="services" class="page container mx-auto px-6 py-16">
+            <h2 class="text-4xl font-black text-center mb-16 uppercase">What I <span class="brand-orange">Do</span></h2>
+            <div class="grid md:grid-cols-3 gap-8 text-center">
+                <div class="p-10 border rounded-[2rem] hover:shadow-xl transition">
+                    <i class="fa-solid fa-seedling text-4xl brand-orange mb-6"></i>
+                    <h3 class="font-bold text-xl mb-4">Agri-Branding</h3>
+                    <p class="text-slate-500 text-sm">Industrial fertilizer labels, pouches, and bucket packaging design.</p>
                 </div>
+                <div class="p-10 border rounded-[2rem] hover:shadow-xl transition">
+                    <i class="fa-solid fa-house-chimney text-4xl brand-orange mb-6"></i>
+                    <h3 class="font-bold text-xl mb-4">Real Estate</h3>
+                    <p class="text-slate-500 text-sm">3D house elevations, hoardings, and marketing banners.</p>
+                </div>
+                <div class="p-10 border rounded-[2rem] hover:shadow-xl transition">
+                    <i class="fa-solid fa-language text-4xl brand-orange mb-6"></i>
+                    <h3 class="font-bold text-xl mb-4">Bilingual Design</h3>
+                    <p class="text-slate-500 text-sm">Professional marketing materials in both Kannada and English.</p>
+                </div>
+            </div>
+        </section>
+
+        <section id="contact" class="page container mx-auto px-6 py-16 text-center">
+            <div class="max-w-2xl mx-auto">
+                <h2 class="text-4xl font-black mb-12 uppercase">Contact <span class="brand-orange">Me</span></h2>
+                <form id="contact-form" class="space-y-4 text-left">
+                    <input type="text" id="usr_name" placeholder="Your Name" required class="w-full p-4 rounded-xl border outline-none">
+                    <input type="email" id="usr_email" placeholder="Email Address" required class="w-full p-4 rounded-xl border outline-none">
+                    <textarea id="usr_msg" placeholder="Tell me about your project requirement..." required class="w-full p-4 rounded-xl border outline-none h-32"></textarea>
+                    <button type="submit" class="w-full bg-brand-orange text-white py-4 rounded-xl font-bold">Submit Inquiry</button>
+                </form>
+            </div>
+        </section>
+
+        <section id="admin" class="page container mx-auto px-6 py-16">
+            <div class="bg-white p-8 border rounded-[2rem] shadow-sm">
+                <h2 class="text-2xl font-black mb-8 uppercase">Inquiry <span class="brand-orange">Manager</span></h2>
                 <div class="overflow-x-auto">
                     <table class="w-full text-left">
-                        <thead>
-                            <tr class="text-[10px] uppercase tracking-widest text-slate-400 border-b">
-                                <th class="p-4">Client</th>
-                                <th class="p-4">Email</th>
-                                <th class="p-4">Requirement</th>
-                                <th class="p-4 text-right">Actions</th>
-                            </tr>
+                        <thead class="bg-slate-50 text-[10px] uppercase font-bold text-slate-400">
+                            <tr><th class="p-4">Client</th><th class="p-4">Message</th><th class="p-4 text-right">Actions</th></tr>
                         </thead>
                         <tbody id="leads-body"></tbody>
                     </table>
@@ -123,13 +150,13 @@
     </main>
 
     <script>
-        // NAVIGATION
+        // PAGE TRANSITION
         function showPage(pId) {
             document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
             document.getElementById(pId).classList.add('active');
-            document.querySelectorAll('.nav-btn').forEach(b => {
-                b.classList.remove('nav-active');
-                if(b.getAttribute('data-page') === pId) b.classList.add('nav-active');
+            document.querySelectorAll('.nav-btn').forEach(btn => {
+                btn.classList.remove('nav-active');
+                if(btn.getAttribute('data-page') === pId) btn.classList.add('nav-active');
             });
             if(pId === 'admin') loadLeads();
             window.scrollTo(0,0);
@@ -140,81 +167,66 @@
         // LEAD SYSTEM
         document.getElementById('contact-form').addEventListener('submit', function(e) {
             e.preventDefault();
-            const lead = {
-                id: Date.now(),
-                n: document.getElementById('usr_name').value,
-                e: document.getElementById('usr_email').value,
-                m: document.getElementById('usr_msg').value
-            };
+            const lead = { id: Date.now(), n: document.getElementById('usr_name').value, e: document.getElementById('usr_email').value, m: document.getElementById('usr_msg').value };
             let leads = JSON.parse(localStorage.getItem('sg_leads') || '[]');
             leads.push(lead);
             localStorage.setItem('sg_leads', JSON.stringify(leads));
-            alert("Sent! I will check your inquiry.");
+            alert("Message Received! I will view it in my Admin panel.");
             this.reset();
         });
 
         function loadLeads() {
             const body = document.getElementById('leads-body');
             const leads = JSON.parse(localStorage.getItem('sg_leads') || '[]');
-            body.innerHTML = leads.length ? '' : '<tr><td colspan="4" class="p-10 text-center text-slate-300">No requests yet.</td></tr>';
+            body.innerHTML = leads.length ? '' : '<tr><td colspan="3" class="p-10 text-center text-slate-300">No entries.</td></tr>';
             leads.forEach(l => {
-                body.innerHTML += `
-                <tr class="border-b hover:bg-slate-50 transition">
-                    <td class="p-4 font-bold text-sm uppercase">${l.n}</td>
-                    <td class="p-4 text-sm brand-orange underline">${l.e}</td>
+                body.innerHTML += `<tr class="border-b hover:bg-slate-50">
+                    <td class="p-4 font-bold text-sm">${l.n}<br><span class="text-[10px] text-blue-500">${l.e}</span></td>
                     <td class="p-4 text-xs text-slate-500">${l.m}</td>
                     <td class="p-4 text-right space-x-2">
-                        <button onclick="reply('${l.e}', '${l.n}')" class="text-brand-orange bg-orange-50 w-10 h-10 rounded-lg"><i class="fa-solid fa-paper-plane"></i></button>
-                        <button onclick="delLead(${l.id})" class="text-slate-400 hover:text-red-500 w-10 h-10 rounded-lg"><i class="fa-solid fa-trash"></i></button>
+                        <button onclick="reply('${l.e}', '${l.n}')" class="text-brand-orange text-xl"><i class="fa-solid fa-paper-plane"></i></button>
+                        <button onclick="delL(${l.id})" class="text-slate-300"><i class="fa-solid fa-trash"></i></button>
                     </td>
                 </tr>`;
             });
         }
 
         function reply(email, name) {
-            const msg = prompt(`Reply to ${name}:`);
-            if(!msg) return;
-            window.location.href = `mailto:${email}?subject=Reply from Sumanth G&body=${encodeURIComponent(msg)}`;
+            const m = prompt(`Feedback for ${name}:`);
+            if(m) window.location.href = `mailto:${email}?subject=Reply from Sumanth G&body=${encodeURIComponent(m)}`;
         }
 
-        function delLead(id) {
-            let leads = JSON.parse(localStorage.getItem('sg_leads') || '[]').filter(l => l.id !== id);
-            localStorage.setItem('sg_leads', JSON.stringify(leads));
+        function delL(id) {
+            let l = JSON.parse(localStorage.getItem('sg_leads') || '[]').filter(x => x.id !== id);
+            localStorage.setItem('sg_leads', JSON.stringify(l));
             loadLeads();
         }
 
         function accessAdmin() {
-            if(btoa(prompt("Pin:")?.trim()) === "MjkwNA==") showPage('admin');
+            if(btoa(prompt("Key:")) === "MjkwNA==") showPage('admin');
             else alert("Denied");
         }
 
-        // GITHUB LOAD
-        async function fetchWork() {
-            const root = document.getElementById('gallery-root');
+        // ASSETS LOAD
+        async function fetchW() {
+            const r = document.getElementById('gallery-root');
             try {
-                const res = await fetch(`https://api.github.com/repos/Sumanthg04/portfolio-assets/contents/projects`);
+                const res = await fetch('https://api.github.com/repos/Sumanthg04/portfolio-assets/contents/projects');
                 const data = await res.json();
                 if(Array.isArray(data)) {
-                    root.innerHTML = '';
+                    r.innerHTML = '';
                     data.forEach(f => {
                         if(f.name.match(/\.(jpg|jpeg|png|webp)$/i)) {
-                            root.innerHTML += `
-                            <div class="group bg-white border border-slate-100 rounded-3xl overflow-hidden hover:shadow-2xl transition duration-500">
-                                <img src="${f.download_url}" class="w-full aspect-[4/3] object-cover group-hover:scale-110 transition duration-700">
-                                <div class="p-6">
-                                    <h4 class="font-bold uppercase tracking-tighter text-slate-800">${f.name.split('.')[0].replace(/-/g, ' ')}</h4>
-                                    <div class="mt-4 flex justify-between items-center">
-                                        <span class="text-[10px] font-black text-slate-400 tracking-widest uppercase">Visual Solution</span>
-                                        <img src="logo.png" class="h-4 opacity-20">
-                                    </div>
-                                </div>
+                            r.innerHTML += `<div class="bg-slate-50 border rounded-2xl overflow-hidden shadow-sm">
+                                <img src="${f.download_url}" class="w-full aspect-square object-cover">
+                                <div class="p-4 font-bold text-xs uppercase text-center">${f.name.split('.')[0]}</div>
                             </div>`;
                         }
                     });
                 }
             } catch(e) {}
         }
-        window.onload = fetchWork;
+        window.onload = fetchW;
     </script>
 </body>
 </html>
