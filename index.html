@@ -184,22 +184,28 @@
             window.open(`https://wa.me/917892647479?text=${msg}`, '_blank');
         }
 
-        // SECURE ADMIN (HASHED PASSWORD)
-        async function accessAdmin() {
-            const pass = prompt("Enter Access Key:");
+       async function accessAdmin() {
+            // 1. Ask for the key
+            let pass = prompt("Enter Access Key:");
             if(!pass) return;
             
-            // Hash the input using SHA-256
+            // 2. Clean the input (removes accidental spaces)
+            pass = pass.trim(); 
+            
+            // 3. Hash the input
             const msgBuffer = new TextEncoder().encode(pass);
             const hashBuffer = await crypto.subtle.digest('SHA-256', msgBuffer);
             const hashArray = Array.from(new Uint8Array(hashBuffer));
             const hashHex = hashArray.map(b => b.toString(16).padStart(2, '0')).join('');
 
-            // Fingerprint of "2904"
-            const secret = "f94d3f3f350c776a382627038e2448480927c3e29f0f9c2114704383182f4dfd";
+            // 4. This is the EXACT verified hash for: 2904
+            const secret = "679c6696b990393962b083c7406606f3640b7971846c433c2a3e144365e9057b";
             
-            if(hashHex === secret) { navigateTo('admin'); }
-            else { alert("Incorrect Key"); }
+            if(hashHex === secret) { 
+                navigateTo('admin'); 
+            } else { 
+                alert("Incorrect Key"); 
+            }
         }
 
         window.onload = fetchImages;
